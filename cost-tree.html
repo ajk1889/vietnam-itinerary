@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>വിയറ്റ്നാം &amp; സിംഗപ്പൂർ — ചെലവ് വിശദാംശം</title>
+<style>
+  :root {
+    --bg:#eef4f2; --card:#ffffff; --text:#102a2a; --muted:#5b6b6a;
+    --accent:#0b5d5a; --accent-soft:#e6f2ef; --line:#e4eeeb;
+    --red:#b42318; --red-soft:#fdecea; --amber:#b54708;
+    --radius:16px;
+    --shadow:0 1px 2px rgba(12,45,43,.06), 0 8px 24px rgba(12,45,43,.07);
+  }
+  * { box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; }
+  body {
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Malayalam",
+      "Noto Sans", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size:16px; line-height:1.5;
+    padding:16px 12px calc(28px + env(safe-area-inset-bottom));
+    -webkit-font-smoothing:antialiased;
+  }
+  .app { max-width:760px; margin:0 auto; }
+  .money, .total, .ga, .ca, .root-amt { font-variant-numeric:tabular-nums; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position:relative; overflow:hidden;
+    background:linear-gradient(148deg,#0d6b66 0%,#0b5d5a 42%,#08403e 78%,#06312f 100%);
+    color:#fff; border-radius:20px; padding:22px 20px 18px;
+    box-shadow:0 10px 30px rgba(8,64,62,.28);
+  }
+  .hero::after {
+    content:""; position:absolute; width:220px; height:220px; right:-92px; top:-118px;
+    border-radius:50%; background:radial-gradient(circle, rgba(255,255,255,.14), rgba(255,255,255,0) 68%);
+    pointer-events:none;
+  }
+  .hero h1 { margin:0; font-size:20px; line-height:1.38; font-weight:600; letter-spacing:-.1px; max-width:24ch; }
+  .ver { margin:6px 0 0; font-size:12.5px; color:rgba(255,255,255,.78); }
+  .kicker {
+    margin:18px 0 2px; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:rgba(255,255,255,.74); font-weight:600;
+  }
+  .total { margin:0; font-size:42px; line-height:1.15; font-weight:700; letter-spacing:-.8px; }
+  .sub { margin:6px 0 0; font-size:14px; color:rgba(255,255,255,.86); }
+  .sub b { font-weight:600; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .chip {
+    display:inline-flex; align-items:center; gap:6px; min-height:28px;
+    border-radius:999px; padding:4px 11px; font-size:12.5px; font-weight:600;
+    background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18);
+    color:#eaf7f4; white-space:nowrap;
+  }
+  .chip.over { background:var(--red); border-color:var(--red); color:#fff; }
+  .bar-wrap { margin-top:16px; }
+  .bar {
+    display:flex; height:9px; border-radius:999px; overflow:hidden;
+    background:rgba(255,255,255,.16);
+  }
+  .bar span { display:block; height:100%; transition:width .25s ease; }
+  #segIn { background:#8fe3d8; }
+  #segOver { background:#ff9a8f; }
+  .barnote { margin:7px 0 0; font-size:11.5px; color:rgba(255,255,255,.8); }
+
+  /* ---------- controls ---------- */
+  .controls {
+    position:sticky; top:8px; z-index:20;
+    display:flex; align-items:center; gap:10px;
+    background:rgba(255,255,255,.94); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    border:1px solid var(--line); border-radius:14px; padding:6px;
+    box-shadow:0 4px 16px rgba(12,45,43,.08); margin-top:14px;
+  }
+  .seg { display:flex; flex:1 1 auto; min-width:0; background:#e9f1ef; border-radius:11px; padding:3px; gap:3px; }
+  .seg button {
+    flex:1 1 0; min-width:0; min-height:44px; border:0; border-radius:9px;
+    background:transparent; color:var(--muted); font:inherit; font-size:14px; font-weight:600;
+    cursor:pointer; -webkit-tap-highlight-color:transparent; transition:background .18s, color .18s, box-shadow .18s;
+  }
+  .seg button[aria-pressed="true"] { background:#fff; color:var(--accent); box-shadow:0 1px 3px rgba(12,45,43,.14); }
+  .seg button:focus-visible, .linkbtn:focus-visible, summary:focus-visible {
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  .linkbtn {
+    flex:0 0 auto; min-height:44px; padding:0 10px; border:0; border-radius:9px;
+    background:transparent; color:var(--accent); font:inherit; font-size:12.5px; font-weight:600;
+    white-space:nowrap; cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .linkbtn:active { background:var(--accent-soft); }
+
+  .hint { margin:10px 4px 10px; font-size:12px; color:var(--muted); line-height:1.45; }
+
+  /* ---------- tree card ---------- */
+  .card { background:var(--card); border-radius:18px; box-shadow:var(--shadow); border:1px solid #e7efec; overflow:hidden; }
+  details { border:0; }
+  summary {
+    list-style:none; cursor:pointer; -webkit-tap-highlight-color:transparent;
+    display:grid; align-items:center; column-gap:10px;
+    grid-template-columns:26px minmax(0,1fr) auto 14px;
+    padding:13px 16px; min-height:56px; position:relative;
+  }
+  summary::-webkit-details-marker { display:none; }
+  summary::marker { content:""; }
+  .root > summary { background:#fbfdfc; border-bottom:1px solid var(--line); min-height:60px; }
+  .group > summary { border-top:1px solid var(--line); }
+  .group:first-of-type > summary { border-top:0; }
+  .group > summary:active { background:#f4faf8; }
+  .ic { font-size:19px; line-height:1; width:26px; text-align:center; font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Noto Sans Malayalam",sans-serif; }
+  .gl { min-width:0; font-size:15.5px; font-weight:600; line-height:1.4; overflow-wrap:break-word; }
+  .gm { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin-top:3px; }
+  .pct {
+    display:inline-block; background:var(--accent-soft); color:var(--accent);
+    border-radius:999px; padding:1.5px 7px; font-size:11px; font-weight:700; letter-spacing:.01em;
+  }
+  .gsub { font-size:11.5px; color:var(--muted); font-weight:400; }
+  .ga { font-size:16px; font-weight:700; white-space:nowrap; letter-spacing:-.2px; }
+  .chev {
+    width:7px; height:7px; border-right:1.8px solid #8aa3a0; border-bottom:1.8px solid #8aa3a0;
+    transform:rotate(45deg); transition:transform .18s ease; margin-top:-3px; justify-self:center;
+  }
+  details[open] > summary .chev { transform:rotate(225deg); margin-top:2px; }
+
+  .children { list-style:none; margin:0 16px 12px 29px; padding:0 0 0 14px; border-left:2px solid #dfeae7; }
+  .children li {
+    position:relative; display:grid; grid-template-columns:minmax(0,1fr) auto; column-gap:10px;
+    align-items:start; padding:10px 0; border-top:1px dashed #eaf2f0;
+  }
+  .children li:first-child { border-top:0; padding-top:6px; }
+  .children li:last-child { padding-bottom:8px; }
+  .children li::before {
+    content:""; position:absolute; left:-14px; top:21px; width:9px; height:2px; background:#dfeae7;
+  }
+  .cl { min-width:0; font-size:14px; line-height:1.45; color:#173a38; overflow-wrap:break-word; }
+  .cd { display:block; font-size:11.5px; color:var(--muted); margin-top:2px; line-height:1.4; }
+  .ca { font-size:14px; font-weight:600; white-space:nowrap; padding-top:1px; }
+
+  .root-amt { font-size:17px; font-weight:700; white-space:nowrap; }
+  .root-title { font-size:15px; font-weight:700; }
+  .root-title small { display:block; font-size:11.5px; font-weight:400; color:var(--muted); margin-top:2px; }
+
+  /* ---------- footer ---------- */
+  .foot { margin-top:14px; padding:14px 16px; background:#fff; border:1px solid #e7efec; border-radius:var(--radius); box-shadow:var(--shadow); }
+  .foot p { margin:0; font-size:12px; line-height:1.6; color:var(--muted); }
+  .foot p + p { margin-top:6px; }
+  .foot strong { color:var(--text); font-weight:600; }
+  .warn { color:var(--amber); font-weight:600; }
+  .src { font-size:11.5px; }
+
+  @media (min-width:721px) {
+    body { padding:28px 24px 40px; }
+    .hero { padding:28px 28px 22px; border-radius:22px; }
+    .hero h1 { font-size:24px; max-width:none; }
+    .total { font-size:52px; }
+    .controls { top:14px; }
+    summary { padding:14px 20px; }
+    .children { margin-left:33px; margin-right:20px; }
+    .root > summary { padding-left:20px; padding-right:20px; }
+    .hint { margin-left:6px; }
+  }
+  @media (max-width:374px) {
+    .total { font-size:36px; }
+    .linkbtn { font-size:12px; padding:0 6px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="hero">
+    <h1>വിയറ്റ്നാം &amp; സിംഗപ്പൂർ — ചെലവ് വിശദാംശം</h1>
+    <p class="ver">പതിപ്പ് 16 · 12 നവം 2026</p>
+    <p class="kicker" id="heroLabel">ഗ്രൂപ്പ് ആകെ · 4 പേർ</p>
+    <p class="total money" data-g="390566" data-c="195283">₹3,90,566</p>
+    <p class="sub" id="heroSub">ഒരു ദമ്പതിക്ക് <b>₹1,95,283</b></p>
+    <div class="chips">
+      <span class="chip" id="capChip">പരിധി ₹3,60,000</span>
+      <span class="chip over" id="overChip">₹30,566 കൂടുതൽ</span>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar" role="img" id="bar" aria-label="ചെലവ് പരിധിയുമായുള്ള താരതമ്യം">
+        <span id="segIn" style="width:92.2%"></span>
+        <span id="segOver" style="width:7.8%"></span>
+      </div>
+      <p class="barnote" id="barNote">പരിധിയുടെ 108.5% · ₹30,566 കൂടുതൽ</p>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="തുക ഏത് രീതിയിൽ കാണിക്കണം">
+      <button type="button" data-mode="g" aria-pressed="true" id="btnGroup">ഗ്രൂപ്പ്</button>
+      <button type="button" data-mode="c" aria-pressed="false" id="btnCouple">ദമ്പതി</button>
+    </div>
+    <button type="button" class="linkbtn" id="expandAll">എല്ലാം തുറക്കുക</button>
+  </div>
+
+  <p class="hint">വിഭാഗത്തിൽ തൊട്ടാൽ ഇനം തിരിച്ചുള്ള വിശദാംശം. <strong>ദമ്പതി</strong> തിരഞ്ഞെടുത്താൽ എല്ലാ തുകയും ഒരു ദമ്പതിക്കുള്ളതാകും.</p>
+
+  <main class="card">
+    <details class="root" open>
+      <summary>
+        <span class="ic" aria-hidden="true">📋</span>
+        <span class="root-title">ചെലവ് ഘടകങ്ങൾ<small>10 വിഭാഗം · 55 ഇനം</small></span>
+        <span class="root-amt money" data-g="390566" data-c="195283">₹3,90,566</span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="groups">
+        <details class="group">
+  <summary>
+    <span class="ic" aria-hidden="true">✈️</span>
+    <span class="gl">വിമാനങ്ങൾ<span class="gm"><span class="pct">61.4%</span><span class="gsub">5 ടിക്കറ്റ്</span></span></span>
+    <span class="ga money" data-g="239676" data-c="119838">₹2,39,676</span>
+    <span class="chev" aria-hidden="true"></span>
+  </summary>
+  <ul class="children">
+    <li><span class="cl">Singapore Airlines SQ535 + SQ176<span class="cd">PNR FNM22S · 4 പേർ</span></span><span class="ca money" data-g="79728" data-c="39864">₹79,728</span></li><li><span class="cl">Vietjet VJ522<span class="cd">PNR BQ7Y9J · 4 പേർ</span></span><span class="ca money" data-g="8828" data-c="4414">₹8,828</span></li><li><span class="cl">IndiGo 6E1634 + 6E6262<span class="cd">PNR V7C7SY · 4 പേർ</span></span><span class="ca money" data-g="151120" data-c="75560">₹1,51,120</span></li>
+  </ul>
+</details><details class="group">
+  <summary>
+    <span class="ic" aria-hidden="true">🛂</span>
+    <span class="gl">വിസ<span class="gm"><span class="pct">5.9%</span><span class="gsub">4 പേർ</span></span></span>
+    <span class="ga money" data-g="22980" data-c="11490">₹22,980</span>
+    <span class="chev" aria-hidden="true"></span>
+  </summary>
+  <ul class="children">
+    <li><span class="cl">സിംഗപ്പൂർ സർക്കാർ ഫീ<span class="cd">4 × ₹2,100</span></span><span class="ca money" data-g="8400" data-c="4200">₹8,400</span></li><li><span class="cl">ഏജന്റ് സേവന ഫീ<span class="cd">4 × ₹1,300</span></span><span class="ca money" data-g="5200" data-c="2600">₹5,200</span></li><li><span class="cl">വിയറ്റ്നാം e-visa<span class="cd">4 × US$25</span></span><span class="ca money" data-g="9380" data-c="4690">₹9,380</span></li>
+  </ul>
+</details><details class="group">
+  <summary>
+    <span class="ic" aria-hidden="true">🧳</span>
+    <span class="gl">വിയറ്റ്ജെറ്റ് ചെക്ക്ഡ് ബാഗേജ്<span class="gm"><span class="pct">0.7%</span><span class="gsub">2 സ്യൂട്ട്കേസ്</span></span></span>
+    <span class="ga money" data-g="2848" data-c="1424">₹2,848</span>
+    <span class="chev" aria-hidden="true"></span>
+  </summary>
+  <ul class="children">
+    <li><span class="cl">2 × 30 kg (ഓരോ ദമ്പതികൾക്കും ഒന്ന്)<span class="cd">360,000 VND + 8% VAT = 777,600 VND</span></span><span class="ca money" data-g="2848" data-c="1424">₹2,848</span></li>
+  </ul>
+</details><details class="group">
+  <summary>
+    <span class="ic" aria-hidden="true">🏨</span>
+    <span class="gl">താമസം<span class="gm"><span class="pct">7.0%</span><span class="gsub">5 രാത്രി · 2 മുറി</span></span></span>
+    <span class="ga money" data-g="27418" data-c="13709">₹27,418</span>
+    <span class="chev" aria-hidden="true"></span>
+  </summary>
+  <ul class="children">
+    <li><span class="cl">HY Local Budget Hotel, Hoi An<span class="cd">2 മുറി × 2 രാത്രി · 15–17 Dec</span></span><span class="ca money" data-g="7257" data-c="3628">₹7,257</span></li><li><span class="cl">Hanoi Old Quarter Hotel &amp; Spa<span class="cd">2 മുറി × 3 രാത്രി · 17–20 Dec</span></span><span class="ca money" data-g="20161" data-c="10081">₹20,161</span></li>
+  </ul>
+</details><details class="group">
+  <summary>
+    <span class="ic" aria-hidden="true">🚕</span>
+    <span class="gl">യാത്ര<span class="gm"><span class="pct">7.9%</span><span class="gsub">12 യാത്ര</span></span></span>
+    <span class="ga money" data-g="30690" data-c="15345">₹30,690</span>
+    <span class="chev" aria-hidden="true"></span>
+  </summary>
+  <ul class="children">
+    <li><span class="cl">വീട് ↔ COK ടാക്സി<span class="cd">രണ്ട് വഴി · 4 പേർ</span></span><span class="ca money" data-g="2200" data-c="1100">₹2,200</span></li><li><span class="cl">SG Grab: T2 → Gardens by the Bay<span class="cd">S$55 · 15 Dec</span></span><span class="ca money" data-g="4026" data-c="2013">₹4,026</span></li><li><span class="cl">SG MRT + കാർഡ്<span class="cd">S$7.52 (S$5.12 + S$2.40)</span></span><span class="ca money" data-g="550" data-c="275">₹550</span></li><li><span class="cl">SG Grab: Maxwell → One Fullerton<span class="cd">S$15 · 15 Dec</span></span><span class="ca money" data-g="1098" data-c="549">₹1,098</span></li><li><span class="cl">SG Grab: One Fullerton → Changi T2<span class="cd">S$45 · 16 Dec</span></span><span class="ca money" data-g="3294" data-c="1647">₹3,294</span></li><li><span class="cl">ഡാ നാങ് → Hoi An<span class="cd">7-സീറ്റർ · 400,000 VND</span></span><span class="ca money" data-g="1465" data-c="732">₹1,465</span></li><li><span class="cl">Cam Thanh Grab ×2<span class="cd">2 × 90,000 VND</span></span><span class="ca money" data-g="659" data-c="329">₹659</span></li><li><span class="cl">17 Dec ദിവസ കാർ<span class="cd">8 മണിക്കൂർ · 1,800,000 VND</span></span><span class="ca money" data-g="6593" data-c="3297">₹6,593</span></li><li><span class="cl">നോയ് ബായ് → ഹോട്ടൽ<span class="cd">450,000 VND</span></span><span class="ca money" data-g="1648" data-c="824">₹1,648</span></li><li><span class="cl">ഹാനോയ് Grab ×5<span class="cd">ഓരോന്നും 70,000 VND</span></span><span class="ca money" data-g="1282" data-c="641">₹1,282</span></li><li><span class="cl">നിൻ ബിൻ കാർ<span class="cd">1,700,000 VND</span></span><span class="ca money" data-g="6227" data-c="3114">₹6,227</span></li><li><span class="cl">ഹോട്ടൽ → നോയ് ബായ്<span class="cd">450,000 VND</span></span><span class="ca money" data-g="1648" data-c="824">₹1,648</span></li>
+  </ul>
+</details><details class="group">
+  <summary>
+    <span class="ic" aria-hidden="true">🎟️</span>
+    <span class="gl">ടിക്കറ്റുകളും പ്രവർത്തനങ്ങളും<span class="gm"><span class="pct">7.7%</span><span class="gsub">11 ഇനം</span></span></span>
+    <span class="ga money" data-g="29990" data-c="14995">₹29,990</span>
+    <span class="chev" aria-hidden="true"></span>
+  </summary>
+  <ul class="children">
+    <li><span class="cl">SkyPark, Gardens by the Bay<span class="cd">4 × S$24.50 · 15 Dec-ന് വാങ്ങുന്നു</span></span><span class="ca money" data-g="7174" data-c="3587">₹7,174</span></li><li><span class="cl">കൊട്ടവഞ്ചി — Cam Thanh<span class="cd">2 വഞ്ചി · ~800,000 VND</span></span><span class="ca money" data-g="2930" data-c="1465">₹2,930</span></li><li><span class="cl">Hoi An പൈതൃക ടിക്കറ്റ്<span class="cd">4 × 80,000 VND</span></span><span class="ca money" data-g="1172" data-c="586">₹1,172</span></li><li><span class="cl">Tân Kỳ പഴയ വീട്<span class="cd">സാധ്യമായ അധികം · 4 × 35,000 VND</span></span><span class="ca money" data-g="513" data-c="256">₹513</span></li><li><span class="cl">വിളക്കുവഞ്ചി + ലാന്റണുകൾ<span class="cd">Hoi An</span></span><span class="ca money" data-g="952" data-c="476">₹952</span></li><li><span class="cl">മാർബിൾ മൗണ്ടൻസ്<span class="cd">4 × 70,000 VND</span></span><span class="ca money" data-g="1026" data-c="513">₹1,026</span></li><li><span class="cl">Hỏa Lò തുറുങ്ക്<span class="cd">4 × 50,000 VND</span></span><span class="ca money" data-g="733" data-c="367">₹733</span></li><li><span class="cl">വിദ്യാക്ഷേത്രം (Temple of Literature)<span class="cd">4 × 70,000 VND</span></span><span class="ca money" data-g="1026" data-c="513">₹1,026</span></li><li><span class="cl">ഹാനോയ് തെരുവ് ഭക്ഷണ ടൂർ<span class="cd">4 × US$20 · ഗ്രൂപ്പ് ടൂർ; സ്വകാര്യം US$25/ആൾ</span></span><span class="ca money" data-g="7504" data-c="3752">₹7,504</span></li><li><span class="cl">Tràng An<span class="cd">4 × 300,000 VND + ടിപ്പ്</span></span><span class="ca money" data-g="4762" data-c="2381">₹4,762</span></li><li><span class="cl">Mua Cave<span class="cd">4 × 150,000 VND</span></span><span class="ca money" data-g="2198" data-c="1099">₹2,198</span></li>
+  </ul>
+</details><details class="group">
+  <summary>
+    <span class="ic" aria-hidden="true">🍜</span>
+    <span class="gl">ഭക്ഷണവും പാനീയവും<span class="gm"><span class="pct">5.9%</span><span class="gsub">17 ഇനം</span></span></span>
+    <span class="ga money" data-g="23110" data-c="11555">₹23,110</span>
+    <span class="chev" aria-hidden="true"></span>
+  </summary>
+  <ul class="children">
+    <li><span class="cl">15 Dec · SG breakfast</span><span class="ca money" data-g="1903" data-c="952">₹1,903</span></li><li><span class="cl">15 Dec · Maxwell ഉച്ചഭക്ഷണം<span class="cd">Maxwell Food Centre</span></span><span class="ca money" data-g="2342" data-c="1171">₹2,342</span></li><li><span class="cl">15 Dec · Morning Glory അത്താഴം<span class="cd">Hoi An</span></span><span class="ca money" data-g="2198" data-c="1099">₹2,198</span></li><li><span class="cl">16 Dec · bánh bèo<span class="cd">breakfast</span></span><span class="ca money" data-g="586" data-c="293">₹586</span></li><li><span class="cl">16 Dec · cao lầu<span class="cd">ഉച്ചഭക്ഷണം</span></span><span class="ca money" data-g="806" data-c="403">₹806</span></li><li><span class="cl">16 Dec · White Rose<span class="cd">അത്താഴം</span></span><span class="ca money" data-g="1465" data-c="733">₹1,465</span></li><li><span class="cl">17 Dec · bánh mì</span><span class="ca money" data-g="513" data-c="256">₹513</span></li><li><span class="cl">17 Dec · mì Quảng</span><span class="ca money" data-g="733" data-c="366">₹733</span></li><li><span class="cl">17 Dec · bánh xèo</span><span class="ca money" data-g="1319" data-c="659">₹1,319</span></li><li><span class="cl">18 Dec · bún thang<span class="cd">brunch</span></span><span class="ca money" data-g="586" data-c="293">₹586</span></li><li><span class="cl">18 Dec · Train Street café<span class="cd">പാനീയങ്ങൾ</span></span><span class="ca money" data-g="952" data-c="476">₹952</span></li><li><span class="cl">19 Dec · phở<span class="cd">breakfast</span></span><span class="ca money" data-g="916" data-c="458">₹916</span></li><li><span class="cl">19 Dec · ആട്ടിറച്ചി ഉച്ചഭക്ഷണം<span class="cd">goat lunch</span></span><span class="ca money" data-g="2564" data-c="1282">₹2,564</span></li><li><span class="cl">19 Dec · bún bò Nam Bộ<span class="cd">അത്താഴം</span></span><span class="ca money" data-g="1026" data-c="513">₹1,026</span></li><li><span class="cl">19 Dec · bia hơi</span><span class="ca money" data-g="586" data-c="293">₹586</span></li><li><span class="cl">20 Dec · bánh cuốn<span class="cd">breakfast</span></span><span class="ca money" data-g="586" data-c="293">₹586</span></li><li><span class="cl">വെള്ളം / കാപ്പി / സ്നാക്സ്<span class="cd">1,100,000 VND · യാത്ര മുഴുവൻ</span></span><span class="ca money" data-g="4029" data-c="2015">₹4,029</span></li>
+  </ul>
+</details><details class="group">
+  <summary>
+    <span class="ic" aria-hidden="true">💵</span>
+    <span class="gl">ടിപ്പുകൾ<span class="gm"><span class="pct">0.4%</span><span class="gsub">4 ആൾ</span></span></span>
+    <span class="ga money" data-g="1612" data-c="806">₹1,612</span>
+    <span class="chev" aria-hidden="true"></span>
+  </summary>
+  <ul class="children">
+    <li><span class="cl">ദിവസ ഡ്രൈവർ 1<span class="cd">17 Dec · 120,000 VND</span></span><span class="ca money" data-g="440" data-c="220">₹440</span></li><li><span class="cl">ദിവസ ഡ്രൈവർ 2<span class="cd">19 Dec · 120,000 VND</span></span><span class="ca money" data-g="440" data-c="220">₹440</span></li><li><span class="cl">ഫുഡ് ടൂർ ഗൈഡ്<span class="cd">100,000 VND</span></span><span class="ca money" data-g="366" data-c="183">₹366</span></li><li><span class="cl">കൊട്ടവഞ്ചി തുഴക്കാർ<span class="cd">2 × 50,000 VND</span></span><span class="ca money" data-g="366" data-c="183">₹366</span></li>
+  </ul>
+</details><details class="group">
+  <summary>
+    <span class="ic" aria-hidden="true">💳</span>
+    <span class="gl">കാർഡ് / ATM / FX മാർജിൻ<span class="gm"><span class="pct">1.1%</span><span class="gsub">3.5%</span></span></span>
+    <span class="ga money" data-g="4243" data-c="2122">₹4,243</span>
+    <span class="chev" aria-hidden="true"></span>
+  </summary>
+  <ul class="children">
+    <li><span class="cl">വിദേശ കറൻസി ചെലവിലെ 3.5% മാർജിൻ<span class="cd">₹1,21,236 വിദേശ കറൻസി ചെലവ്</span></span><span class="ca money" data-g="4243" data-c="2122">₹4,243</span></li>
+  </ul>
+</details><details class="group">
+  <summary>
+    <span class="ic" aria-hidden="true">🛟</span>
+    <span class="gl">അടിയന്തര കരുതൽ<span class="gm"><span class="pct">2.0%</span><span class="gsub">കരുതൽ</span></span></span>
+    <span class="ga money" data-g="7999" data-c="3999">₹7,999</span>
+    <span class="chev" aria-hidden="true"></span>
+  </summary>
+  <ul class="children">
+    <li><span class="cl">അടിയന്തര റിസർവ്<span class="cd">ഉയർന്ന നിരക്ക്, വില മാറ്റം, നഷ്ടപ്പെട്ട ട്രാൻസ്ഫർ</span></span><span class="ca money" data-g="7999" data-c="3999">₹7,999</span></li>
+  </ul>
+</details>
+      </div>
+    </details>
+  </main>
+
+  <footer class="foot">
+    <p><strong>നിരക്ക്:</strong> 1 SGD = ₹73.2 · 1 US$ = ₹93.8 · 1 INR = 273 VND <span class="src">(11–12 നവം 2026)</span></p>
+    <p>ഗ്രൂപ്പ് ആകെ ₹3,90,566 — ₹3,60,000 പരിധിക്ക് ₹30,566 മുകളിൽ. ഒരു ദമ്പതിക്ക് ₹1,95,283 — ₹1,80,000 പരിധിക്ക് ₹15,283 മുകളിൽ.</p>
+    <p><span class="warn">⚠️</span> എല്ലാ തുകയും ഏകദേശം; നിരക്കും വിലയും മാറാം. ടിപ്പ്, കരുതൽ എന്നിവ ഉൾപ്പെടുത്തിയിട്ടുണ്ട്.</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var nf = new Intl.NumberFormat('en-IN');
+  var fmt = function (n) { return '₹' + nf.format(n); };
+  var mode = 'g';
+  var CAP = { g: 360000, c: 180000 };
+  var TOTAL = { g: 390566, c: 195283 };
+
+  var money = Array.prototype.slice.call(document.querySelectorAll('.money'));
+  var btnGroup = document.getElementById('btnGroup');
+  var btnCouple = document.getElementById('btnCouple');
+  var expandAll = document.getElementById('expandAll');
+  var heroLabel = document.getElementById('heroLabel');
+  var heroSub = document.getElementById('heroSub');
+  var capChip = document.getElementById('capChip');
+  var overChip = document.getElementById('overChip');
+  var segIn = document.getElementById('segIn');
+  var segOver = document.getElementById('segOver');
+  var barNote = document.getElementById('barNote');
+  var bar = document.getElementById('bar');
+  var groups = Array.prototype.slice.call(document.querySelectorAll('details.group'));
+
+  function render() {
+    var key = mode;
+    money.forEach(function (el) {
+      var v = parseInt(el.getAttribute('data-' + key), 10);
+      if (!isNaN(v)) el.textContent = fmt(v);
+    });
+
+    var total = TOTAL[key];
+    var cap = CAP[key];
+    var over = total - cap;
+
+    if (key === 'g') {
+      heroLabel.textContent = 'ഗ്രൂപ്പ് ആകെ · 4 പേർ';
+      heroSub.innerHTML = 'ഒരു ദമ്പതിക്ക് <b>' + fmt(195283) + '</b>';
+    } else {
+      heroLabel.textContent = 'ഒരു ദമ്പതിക്ക്';
+      heroSub.innerHTML = 'ഗ്രൂപ്പ് ആകെ <b>' + fmt(390566) + '</b>';
+    }
+
+    capChip.textContent = 'പരിധി ' + fmt(cap);
+    overChip.textContent = fmt(over) + ' കൂടുതൽ';
+
+    var inPct = Math.min(cap, total) / total * 100;
+    var overPct = Math.max(0, total - cap) / total * 100;
+    segIn.style.width = inPct.toFixed(2) + '%';
+    segOver.style.width = overPct.toFixed(2) + '%';
+
+    var used = (total / cap * 100).toFixed(1);
+    barNote.textContent = 'പരിധിയുടെ ' + used + '% · ' + fmt(over) + ' കൂടുതൽ';
+    bar.setAttribute('aria-label', 'ചെലവ് ' + fmt(total) + ', പരിധി ' + fmt(cap) + ', ' + fmt(over) + ' കൂടുതൽ');
+
+    var pressed = key === 'g';
+    btnGroup.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+    btnCouple.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+  }
+
+  function setMode(next) {
+    if (next !== 'g' && next !== 'c') return;
+    mode = next;
+    render();
+  }
+
+  btnGroup.addEventListener('click', function () { setMode('g'); });
+  btnCouple.addEventListener('click', function () { setMode('c'); });
+
+  expandAll.addEventListener('click', function () {
+    var anyClosed = groups.some(function (d) { return !d.open; });
+    groups.forEach(function (d) { d.open = anyClosed; });
+    expandAll.textContent = anyClosed ? 'എല്ലാം അടയ്ക്കുക' : 'എല്ലാം തുറക്കുക';
+  });
+
+  groups.forEach(function (d) {
+    d.addEventListener('toggle', function () {
+      var allOpen = groups.every(function (x) { return x.open; });
+      expandAll.textContent = allOpen ? 'എല്ലാം അടയ്ക്കുക' : 'എല്ലാം തുറക്കുക';
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
